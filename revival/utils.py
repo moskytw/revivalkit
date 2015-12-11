@@ -33,7 +33,7 @@ def _to_coffin_path(name):
     if name is None:
         return _add_ext(_main_mod_path)
 
-    # if it is a path, respect user
+    # if it is a path, respect it
     if '.' in name or '/' in name:
         return name
 
