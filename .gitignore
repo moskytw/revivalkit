@@ -1,4 +1,7 @@
 __pycache__
 *.pyc
 
+/dist
+/revival.egg-info
+
 *.coffin
