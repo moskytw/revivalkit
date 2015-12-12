@@ -46,11 +46,19 @@ def _to_coffin_path(name):
 
 def _encoffin(serializer, x, name=None):
     log.debug('encoffining', name, '...')
-    return serializer.dump(x, _to_coffin_path(name))
+    with open(
+        _to_coffin_path(name),
+        'wb'[:2-getattr(serializer, 'in_text', False)]
+    ) as f:
+        return serializer.dump(x, f)
 
 def _decoffin(serializer, name=None):
     log.debug('decoffining', name, '...')
-    return serializer.load(_to_coffin_path(name))
+    with open(
+        _to_coffin_path(name),
+        'rb'[:2-getattr(serializer, 'in_text', False)]
+    ) as f:
+        return serializer.load(f)
 
 class _Object(object):
     pass

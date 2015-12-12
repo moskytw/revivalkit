@@ -2,12 +2,10 @@ from __future__ import absolute_import
 
 import json
 
+in_text = True
 
-def dump(x, filename):
-    with open(filename, 'w') as f:
-        return json.dump(x, f)
+def dump(x, f):
+    return json.dump(x, f)
 
-
-def load(filename):
-    with open(filename) as f:
-        return json.load(f)
+def load(f):
+    return json.load(f)
