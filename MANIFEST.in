@@ -3,5 +3,5 @@ graft examples
 graft tests
 graft docs
 prune docs/_build
-global-exclude *.pyc
 global-exclude __pycache__
+global-exclude *.pyc
