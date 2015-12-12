@@ -1,4 +1,3 @@
-from __future__ import print_function
 from revivalkit import revive
 
 # will be stored into 02_adv_revive.py.coffin
