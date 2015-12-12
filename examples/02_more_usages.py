@@ -1,6 +1,6 @@
 from revivalkit import revive
 
-# will be stored into 02_adv_revive.py.coffin
+# will be stored into 02_more_usages.py.coffin
 # when file doesn't exist, ex_1 = list()
 ex_1 = revive(list)
 
