@@ -44,7 +44,7 @@ def _to_coffin_path(name):
     # auto
     return join(_main_mod_dir_path, _add_ext(name))
 
-def _encoffin(serializer, x, name=None):
+def _encoffin(serializer, x, name):
     log.debug('encoffining', name, '...')
     with open(
         _to_coffin_path(name),
@@ -52,7 +52,7 @@ def _encoffin(serializer, x, name=None):
     ) as f:
         return serializer.dump(x, f)
 
-def _decoffin(serializer, name=None):
+def _decoffin(serializer, name):
     log.debug('decoffining', name, '...')
     with open(
         _to_coffin_path(name),
