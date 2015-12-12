@@ -6,7 +6,7 @@ from functools import partial
 
 from . import log
 from . import before_exit
-from . import serializers
+from .serializers import highest_pickle
 
 # py2 raises IOError
 # py3 raises OSError
@@ -44,33 +44,41 @@ def _to_coffin_path(name):
     # auto
     return join(_main_mod_dir_path, _add_ext(name))
 
-def _encoffin(serializer, x, name=None):
+def _encoffin(name, in_text, serializer, x):
     log.debug('encoffining', name, '...')
-    return serializer.dump(x, _to_coffin_path(name))
+    with open(
+        _to_coffin_path(name),
+        'w' if in_text else 'wb'
+    ) as f:
+        return serializer.dump(x, f)
 
-def _decoffin(serializer, name=None):
+def _decoffin(name, in_text, serializer):
     log.debug('decoffining', name, '...')
-    return serializer.load(_to_coffin_path(name))
+    with open(
+        _to_coffin_path(name),
+        'r' if in_text else 'rb'
+    ) as f:
+        return serializer.load(f)
 
 class _Object(object):
     pass
 
-def revive(make_default=None, name=None, serializer=None):
+def revive(make_default=None, name=None, serializer=None, in_text=False):
 
     if make_default is None:
         make_default = _Object
 
     if serializer is None:
-        serializer = serializers.pickle
+        serializer = highest_pickle
 
     try:
-        x = _decoffin(serializer, name)
+        x = _decoffin(name, in_text, serializer)
     except OSError:
         x = make_default()
         log.debug('uses default', name, x)
 
     before_exit.encoffining_que.append(
-        partial(_encoffin, serializer, x, name)
+        partial(_encoffin, name, in_text, serializer, x)
     )
     log.debug('registered', name, x)
 
