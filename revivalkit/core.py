@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import sys
+from os.path import abspath, dirname, join
 from functools import partial
 
 from . import log
@@ -8,6 +10,47 @@ from . import utils
 
 # py3 style
 OSError = IOError
+
+# path-related terms:
+#
+# path
+# = dir_path/file_name
+# = dir_path/base_name.ext
+#
+
+# main module's path
+# we save the path here to avoid cwd changes
+_main_mod_path = abspath(sys.argv[0])
+_main_mod_dir_path = dirname(_main_mod_path)
+
+ext = '.coffin'
+
+def _add_ext(path):
+    return path+ext
+
+def _to_coffin_path(name):
+
+    # if None, use main mod path
+    if name is None:
+        return _add_ext(_main_mod_path)
+
+    # if it is a path, respect it
+    if '.' in name or '/' in name:
+        return name
+
+    # auto
+    return join(_main_mod_dir_path, _add_ext(name))
+
+
+def _encoffin(x, name=None):
+    log.debug('encoffining', name, '...')
+    with open(_to_coffin_path(name), 'wb') as f:
+        return utils.dump(x, f)
+
+def _decoffin(name=None):
+    log.debug('decoffining', name, '...')
+    with open(_to_coffin_path(name), 'rb') as f:
+        return utils.load(f)
 
 class _Object(object):
     pass
@@ -18,13 +61,13 @@ def revive(make_default=None, name=None):
         make_default = _Object
 
     try:
-        x = utils.decoffin(name)
+        x = _decoffin(name)
     except OSError:
         x = make_default()
         log.debug('uses default', name, x)
 
     before_exit.encoffining_que.append(
-        partial(utils.encoffin, x, name)
+        partial(_encoffin, x, name)
     )
     log.debug('registered', name, x)
 
