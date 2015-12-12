@@ -1,6 +1,6 @@
 from __future__ import print_function
 from time import sleep
-from revival import revive
+from revivalkit import revive
 
 o = revive()
 if not hasattr(o, 'que'):

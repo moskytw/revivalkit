@@ -2,9 +2,9 @@ from __future__ import print_function
 
 from functools import partial
 
-from revival import log
-from revival import before_exit
-from revival import utils
+from . import log
+from . import before_exit
+from . import utils
 
 # py3 style
 OSError = IOError

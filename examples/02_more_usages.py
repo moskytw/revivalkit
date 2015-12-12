@@ -1,5 +1,5 @@
 from __future__ import print_function
-from revival import revive
+from revivalkit import revive
 
 # will be stored into 02_adv_revive.py.coffin
 # when file doesn't exist, ex_1 = list()

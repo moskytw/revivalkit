@@ -1,4 +1,4 @@
-from revival.core import (
+from .core import (
     revive,
     append_cleanup
 )

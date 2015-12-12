@@ -8,7 +8,7 @@ except ImportError:
     # py3
     import pickle
 
-from revival import log
+from . import log
 
 # path-related terms:
 #

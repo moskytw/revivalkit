@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
-import revival
+import revivalkit
 
 setup(
-    name='revival',
-    version=revival.__version__,
+    name='revivalkit',
+    version=revivalkit.__version__,
     description='Revive from Ctrl-C or any exception!',
     long_description='Revive from Ctrl-C or any exception!',
     author='Mosky',

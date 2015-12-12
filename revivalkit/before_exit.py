@@ -5,7 +5,7 @@ import atexit
 import signal
 from collections import deque
 
-from revival import log
+from . import log
 
 message = 'still cleaning up ...'
 
