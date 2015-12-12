@@ -7,16 +7,16 @@ from collections import deque
 
 from . import log
 
-message = 'still cleaning up ...'
+still_working_message = 'still cleaning up ...'
 
-def _print_still_saving(signum, frame):
-    print('{}:'.format(sys.argv[0]), message, file=sys.stderr)
+def _print_still_working_message(signum, frame):
+    print('{}:'.format(sys.argv[0]), still_working_message , file=sys.stderr)
 
 _orig_sigint_handler = signal.getsignal(signal.SIGINT)
 
 def _mute_sigint():
     _orig_sigint_handler = signal.getsignal(signal.SIGINT)
-    signal.signal(signal.SIGINT, _print_still_saving)
+    signal.signal(signal.SIGINT, _print_still_working_message)
     log.debug('muted sigint')
 
 def _restore_sigint():
