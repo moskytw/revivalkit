@@ -6,7 +6,7 @@ from functools import partial
 
 from . import log
 from . import before_exit
-from . import serial
+from . import serializers
 
 # py2 raises IOError
 # py3 raises OSError
@@ -44,32 +44,33 @@ def _to_coffin_path(name):
     # auto
     return join(_main_mod_dir_path, _add_ext(name))
 
-def _encoffin(x, name=None):
+def _encoffin(serializer, x, name=None):
     log.debug('encoffining', name, '...')
-    with open(_to_coffin_path(name), 'wb') as f:
-        return serial.dump(x, f)
+    return serializer.dump(x, _to_coffin_path(name))
 
-def _decoffin(name=None):
+def _decoffin(serializer, name=None):
     log.debug('decoffining', name, '...')
-    with open(_to_coffin_path(name), 'rb') as f:
-        return serial.load(f)
+    return serializer.load(_to_coffin_path(name))
 
 class _Object(object):
     pass
 
-def revive(make_default=None, name=None):
+def revive(make_default=None, name=None, serializer=None):
 
     if make_default is None:
         make_default = _Object
 
+    if serializer is None:
+        serializer = serializers.pickle
+
     try:
-        x = _decoffin(name)
+        x = _decoffin(serializer, name)
     except OSError:
         x = make_default()
         log.debug('uses default', name, x)
 
     before_exit.encoffining_que.append(
-        partial(_encoffin, x, name)
+        partial(_encoffin, serializer, x, name)
     )
     log.debug('registered', name, x)
 

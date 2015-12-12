@@ -1,4 +1,7 @@
-__pycache__
+.cache/
+.tox/
+__pycache__/
+.coverage
 *.pyc
 
 /dist
