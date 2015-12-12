@@ -44,7 +44,7 @@ def _to_coffin_path(name):
     # auto
     return join(_main_mod_dir_path, _add_ext(name))
 
-def _encoffin(serializer, in_text, x, name):
+def _encoffin(name, in_text, serializer, x):
     log.debug('encoffining', name, '...')
     with open(
         _to_coffin_path(name),
@@ -52,7 +52,7 @@ def _encoffin(serializer, in_text, x, name):
     ) as f:
         return serializer.dump(x, f)
 
-def _decoffin(serializer, in_text, name):
+def _decoffin(name, in_text, serializer):
     log.debug('decoffining', name, '...')
     with open(
         _to_coffin_path(name),
@@ -72,13 +72,13 @@ def revive(make_default=None, name=None, serializer=None, in_text=False):
         serializer = serializers.pickle
 
     try:
-        x = _decoffin(serializer, in_text, name)
+        x = _decoffin(name, in_text, serializer)
     except OSError:
         x = make_default()
         log.debug('uses default', name, x)
 
     before_exit.encoffining_que.append(
-        partial(_encoffin, serializer, in_text, x, name)
+        partial(_encoffin, name, in_text, serializer, x)
     )
     log.debug('registered', name, x)
 
