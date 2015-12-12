@@ -44,7 +44,6 @@ def _to_coffin_path(name):
     # auto
     return join(_main_mod_dir_path, _add_ext(name))
 
-
 def _encoffin(x, name=None):
     log.debug('encoffining', name, '...')
     with open(_to_coffin_path(name), 'wb') as f:
