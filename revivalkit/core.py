@@ -44,26 +44,26 @@ def _to_coffin_path(name):
     # auto
     return join(_main_mod_dir_path, _add_ext(name))
 
-def _encoffin(serializer, x, name):
+def _encoffin(serializer, in_text, x, name):
     log.debug('encoffining', name, '...')
     with open(
         _to_coffin_path(name),
-        'wb'[:2-getattr(serializer, 'in_text', False)]
+        'w' if in_text else 'wb'
     ) as f:
         return serializer.dump(x, f)
 
-def _decoffin(serializer, name):
+def _decoffin(serializer, in_text, name):
     log.debug('decoffining', name, '...')
     with open(
         _to_coffin_path(name),
-        'rb'[:2-getattr(serializer, 'in_text', False)]
+        'r' if in_text else 'rb'
     ) as f:
         return serializer.load(f)
 
 class _Object(object):
     pass
 
-def revive(make_default=None, name=None, serializer=None):
+def revive(make_default=None, name=None, serializer=None, in_text=False):
 
     if make_default is None:
         make_default = _Object
@@ -72,13 +72,13 @@ def revive(make_default=None, name=None, serializer=None):
         serializer = serializers.pickle
 
     try:
-        x = _decoffin(serializer, name)
+        x = _decoffin(serializer, in_text, name)
     except OSError:
         x = make_default()
         log.debug('uses default', name, x)
 
     before_exit.encoffining_que.append(
-        partial(_encoffin, serializer, x, name)
+        partial(_encoffin, serializer, in_text, x, name)
     )
     log.debug('registered', name, x)
 
