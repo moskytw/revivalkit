@@ -6,7 +6,7 @@ from functools import partial
 
 from . import log
 from . import before_exit
-from . import utils
+from . import serial
 
 # py3 style
 OSError = IOError
@@ -45,12 +45,12 @@ def _to_coffin_path(name):
 def _encoffin(x, name=None):
     log.debug('encoffining', name, '...')
     with open(_to_coffin_path(name), 'wb') as f:
-        return utils.dump(x, f)
+        return serial.dump(x, f)
 
 def _decoffin(name=None):
     log.debug('decoffining', name, '...')
     with open(_to_coffin_path(name), 'rb') as f:
-        return utils.load(f)
+        return serial.load(f)
 
 class _Object(object):
     pass
