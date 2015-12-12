@@ -6,7 +6,7 @@ from functools import partial
 
 from . import log
 from . import before_exit
-from . import serializers
+from .serializers import pickle as _pickle
 
 # py2 raises IOError
 # py3 raises OSError
@@ -69,7 +69,7 @@ def revive(make_default=None, name=None, serializer=None, in_text=False):
         make_default = _Object
 
     if serializer is None:
-        serializer = serializers.pickle
+        serializer = _pickle
 
     try:
         x = _decoffin(name, in_text, serializer)
