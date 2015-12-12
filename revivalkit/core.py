@@ -8,7 +8,10 @@ from . import log
 from . import before_exit
 from . import serial
 
-# py3 style
+# py2 raises IOError
+# py3 raises OSError
+# although py3 is backward compatible with IOError,
+# we still rename it to write the py3-style code.
 OSError = IOError
 
 # path-related terms:
