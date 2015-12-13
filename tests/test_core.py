@@ -11,7 +11,7 @@ import pytest
 extra_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-REVIVE_SUBPROCESS_PROGRAM = ("""
+REVIVE_SUBPROCESS_PROGRAM = """
 import os
 import sys
 
@@ -30,7 +30,7 @@ while o.queue:
     if n == 'oswald':
         raise SystemExit(1)
     print(n)
-""")
+"""
 
 
 @pytest.fixture
