@@ -15,6 +15,7 @@ def _print_still_working_message(signum, frame):
 _orig_sigint_handler = signal.getsignal(signal.SIGINT)
 
 def _mute_sigint():
+    global _orig_sigint_handler
     _orig_sigint_handler = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, _print_still_working_message)
     log.debug('muted sigint')
