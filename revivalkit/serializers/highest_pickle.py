@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 
-try:
+try:                    # pragma: no cover
     # py2
     import cPickle as pickle
-except ImportError:
+except ImportError:     # pragma: no cover
     # py3
     import pickle
 
