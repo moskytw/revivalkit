@@ -29,7 +29,7 @@ _main_mod_dir_path = dirname(_main_mod_path)
 ext = '.coffin'
 
 def _add_ext(path):
-    return path+ext
+    return path + ext
 
 def _to_coffin_path(name):
 
@@ -44,26 +44,27 @@ def _to_coffin_path(name):
     # auto
     return join(_main_mod_dir_path, _add_ext(name))
 
+def _open_for_serializer(name, mode, in_text, serializer):
+    if in_text is None:
+        in_text = getattr(serializer, 'IN_TEXT', False)
+    if not in_text:
+        mode += 'b'
+    return open(_to_coffin_path(name), mode)
+
 def _encoffin(name, in_text, serializer, x):
     log.debug('encoffining', name, '...')
-    with open(
-        _to_coffin_path(name),
-        'w' if in_text else 'wb'
-    ) as f:
+    with _open_for_serializer(name, 'w', in_text, serializer) as f:
         return serializer.dump(x, f)
 
 def _decoffin(name, in_text, serializer):
     log.debug('decoffining', name, '...')
-    with open(
-        _to_coffin_path(name),
-        'r' if in_text else 'rb'
-    ) as f:
+    with _open_for_serializer(name, 'r', in_text, serializer) as f:
         return serializer.load(f)
 
 class _Object(object):
     pass
 
-def revive(make_default=None, name=None, serializer=None, in_text=False):
+def revive(make_default=None, name=None, serializer=None, in_text=None):
 
     if make_default is None:
         make_default = _Object

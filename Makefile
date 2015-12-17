@@ -1,7 +1,7 @@
 .PHONY: test test-all clean
 
 test:
-	py.test --cov-config .coveragerc --cov=revivalkit
+	py.test --cov=revivalkit
 
 test-all:
 	tox
@@ -14,4 +14,4 @@ clean:
 	\)  -print -delete
 
 lint:
-	flake8 revivalkit --ignore=F401,E203,E221,E226,E261,E302
+	flake8 revivalkit
