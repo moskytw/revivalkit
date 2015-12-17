@@ -10,27 +10,6 @@ import pytest
 
 EXTRA_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEFAULT_PROGRAM = """
-import os
-import sys
-
-# Change cwd and script name to fool revivalkit for testing.
-os.chdir(sys.argv[1])
-sys.argv[0] = '___revive_subprocess'
-
-sys.path.append(sys.argv[2])
-from revivalkit import revive
-
-o = revive()
-if not getattr(o, 'queue', []):
-    o.queue = ['james', 'harvey', 'oswald', 'bruce', 'selina']
-while o.queue:
-    n = o.queue.pop()
-    if n == 'oswald':
-        raise SystemExit(1)
-    print(n)
-"""
-
 
 @pytest.fixture
 def tempdir(request):
@@ -43,9 +22,36 @@ def tempdir(request):
     return dirname
 
 
-def test_revive_default(tempdir):
+DEFAULT_PROGRAM_TEMPLATE = """
+import os
+import sys
+
+# Change cwd and script name to fool revivalkit for testing.
+os.chdir(sys.argv[1])
+sys.argv[0] = '___revive_subprocess'
+
+sys.path.append(sys.argv[2])
+from revivalkit import revive
+
+o = revive({revive_code})
+if not getattr(o, 'queue', []):
+    o.queue = ['james', 'harvey', 'oswald', 'bruce', 'selina']
+while o.queue:
+    n = o.queue.pop()
+    if n == 'oswald':
+        raise SystemExit(1)
+    print(n)
+"""
+
+@pytest.mark.parametrize('revive_code, coffin_name', [
+    ('', '___revive_subprocess.coffin'),
+    ("name='my'", 'my.coffin'),
+    ("name='mycoffin.pickle'", 'mycoffin.pickle'),
+])
+def test_revive(tempdir, revive_code, coffin_name):
     subprocess_args = [
-        sys.executable, '-c', DEFAULT_PROGRAM,
+        sys.executable, '-c',
+        DEFAULT_PROGRAM_TEMPLATE.format(revive_code=revive_code),
         tempdir, EXTRA_PATH,
     ]
     with pytest.raises(subprocess.CalledProcessError) as ctx:
@@ -53,7 +59,7 @@ def test_revive_default(tempdir):
     assert ctx.value.returncode == 1
     assert ctx.value.output == b'selina\nbruce\n'
 
-    with open(os.path.join(tempdir, '___revive_subprocess.coffin'), 'rb') as f:
+    with open(os.path.join(tempdir, coffin_name), 'rb') as f:
         o = pickle.load(f)
     assert o.queue == ['james', 'harvey']
 
@@ -92,17 +98,13 @@ class JSONSerializer(object):
     dump = staticmethod(json.dump)
 """
 
-@pytest.fixture(params=[
+@pytest.mark.parametrize('format_params', [
     {'serializer_code': '',
      'revive_code': 'make_default=list, serializer=json, in_text=True'},
     {'serializer_code': JSON_SERIALIZER_CODE,
      'revive_code': 'make_default=list, serializer=JSONSerializer'},
 ])
-def json_serializer_params(request):
-    return request.param
-
-
-def test_revive_json(tempdir, json_serializer_params):
+def test_revive_json(tempdir, format_params):
     """Test two variants of the "in-text" hint feature.
 
     The JSON_PROGRAM variant uses the built-in ``json`` module as the
@@ -113,7 +115,7 @@ def test_revive_json(tempdir, json_serializer_params):
     """
     subprocess_args = [
         sys.executable, '-c',
-        JSON_PROGRAM_TEMPLATE.format(**json_serializer_params),
+        JSON_PROGRAM_TEMPLATE.format(**format_params),
         tempdir,
         EXTRA_PATH,
     ]
