@@ -29,7 +29,7 @@ _main_mod_dir_path = dirname(_main_mod_path)
 ext = '.coffin'
 
 def _add_ext(path):
-    return path+ext
+    return path + ext
 
 def _to_coffin_path(name):
 
