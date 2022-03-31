@@ -20,18 +20,6 @@ while o.que:
     print('consumed', o.que.pop())
 ```
 
-## Install via pip
-
-```bash
-pip install revivalkit
-```
-
-It supports both Python 2 and Python 3.
-
-## Doc?
-
-I'm still working on it. Please read the [examples](https://github.com/moskytw/revivalkit/blob/master/examples/) or just the source code.
-
 ## Thanks
 
 Thanks [uranusjr](https://github.com/uranusjr) and [ypsun](https://github.com/ypsun)'s help at [Taipei.py Projects On](http://www.meetup.com/Taipei-py/events/226558484/). :D
